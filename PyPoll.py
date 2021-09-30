@@ -36,20 +36,97 @@
 # with open(fileName,'w') as txt_file:
 #     txt_file.write('Counties in the Election\n-------------------------\nArapahoe\nDenver\nJefferson')
 
+# import csv
+
+# # Assign a variable to load a file from a path.
+# file_to_load='/Users/humbertorodriguez/Documents/Bootcamp_Data_Analyst/Module_3/Async/election_analysis/Resources/election_results.csv'
+# file_to_save='/Users/humbertorodriguez/Documents/Bootcamp_Data_Analyst/Module_3/Async/election_analysis/Resources/election_analysis.txt'
+
+# #open file 
+# with open(file_to_load,'r') as election_data:
+#     #read the file object with the reader function.
+#     file_reader=csv.reader(election_data)
+
+#     #print each row in the CSV file
+#     # for row in file_reader:
+#     #     print(row)
+#     headers=next(file_reader)
+#     print(headers)
+
 import csv
 
-# Assign a variable to load a file from a path.
-file_to_load='/Users/humbertorodriguez/Documents/Bootcamp_Data_Analyst/Module_3/Async/election_analysis/Resources/election_results.csv'
+file_to_upload='/Users/humbertorodriguez/Documents/Bootcamp_Data_Analyst/Module_3/Async/election_analysis/Resources/election_results.csv'
 file_to_save='/Users/humbertorodriguez/Documents/Bootcamp_Data_Analyst/Module_3/Async/election_analysis/Resources/election_analysis.txt'
 
-#open file 
-with open(file_to_load,'r') as election_data:
-    #read the file object with the reader function.
+total_votes=0
+
+candidate_options=[]
+
+candidate_votes={}
+
+winning_candidate=''
+
+winning_count=0
+
+winning_percentage=0
+
+#open file
+with open(file_to_upload) as election_data:
+
+    #read the file object with the reader function
     file_reader=csv.reader(election_data)
 
-    #print each row in the CSV file
-    # for row in file_reader:
-    #     print(row)
+        #read the headr row
     headers=next(file_reader)
-    print(headers)
 
+        #print each row in the CSV file    
+    for row in file_reader:
+
+        #count each vote
+        total_votes=total_votes+1
+
+        #search for each candidate's name
+        candidate_name=row[2]
+
+        #if the candidate_name is not is candidate_options
+        if candidate_name not in candidate_options:
+
+            #add it to candidate options
+            candidate_options.append(candidate_name)
+
+            #adding candidate and tracking candidate's vote count in zero
+            candidate_votes[candidate_name]=0
+
+        #add 1 vote per loop to candidate_votes
+        candidate_votes[candidate_name]+=1
+
+
+#for each candidate in the rows that is in candidate_votes
+for candidate_name in candidate_votes:
+    #Access candidate_votes and retrieve vote count by candidate
+    votes=candidate_votes[candidate_name]
+
+    #Calculate % of votes
+    vote_percentage=float(votes)/float(total_votes)*100
+
+    # Determine winning vote count and candidate
+    #for each loop if votes is greater than winnin_count and vote_% is greater
+    #than winning_%...
+    if (votes>winning_count) and (vote_percentage>winning_percentage):
+        #If true then set winning_count = votes and winning_percent =
+        #vote_percentage.
+        winning_count=votes
+        winning_percentage=vote_percentage
+        #also for this loop add the candidate_name to winning candidate
+        winning_candidate=candidate_name
+
+    print(f'{candidate_name}: {vote_percentage:.1f}% {votes:,}\n')
+
+winning_candidate_summary=(
+    f'----------------------\n'
+    f'Winner: {winning_candidate}\n'
+    f'Winning Counting Vote: {winning_count:,}\n'
+    f'Winning Percentage: {winning_percentage:.1f}%\n'
+    f'-----------------------\n')
+
+print(winning_candidate_summary)
